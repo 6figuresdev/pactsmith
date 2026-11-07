@@ -1,0 +1,79 @@
+   Compiling pactsmith-escrow v0.1.0 (/home/useruche/pactsmith/contracts/escrow)
+   Compiling pactsmith-payroll v0.1.0 (/home/useruche/pactsmith/contracts/payroll)
+   Compiling pactsmith-split v0.1.0 (/home/useruche/pactsmith/contracts/split)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 6.33s
+     Running unittests src/lib.rs (target/debug/deps/pactsmith_escrow-9f850ab41a620fbf)
+
+running 9 tests
+test tests::stranger_cannot_deposit - should panic ... ok
+test tests::payer_deposits_exact_amount ... ok
+test tests::anyone_refunds_after_deadline ... ok
+test tests::no_refund_before_deadline - should panic ... ok
+test tests::payer_releases ... ok
+test tests::payee_can_return ... ok
+test tests::cannot_pay_out_twice - should panic ... ok
+test tests::payee_cannot_release - should panic ... ok
+test tests::wrong_amount_is_rejected - should panic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.40s
+
+     Running tests/sandbox.rs (target/debug/deps/sandbox-250f1188c73c00bc)
+
+running 7 tests
+test a_past_deadline_cannot_initialize ... ok
+test a_stranger_cannot_deposit ... ok
+test only_the_payer_can_release ... ok
+test wrong_deposit_is_rejected_and_returned ... ok
+test failed_payout_keeps_the_money_and_status ... ok
+test release_pays_the_payee_real_money ... ok
+test refund_works_only_after_the_deadline ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 11.58s
+
+     Running unittests src/lib.rs (target/debug/deps/pactsmith_payroll-7b3b84384c034cb8)
+
+running 7 tests
+test tests::cannot_claim_before_funding - should panic ... ok
+test tests::stranger_cannot_claim - should panic ... ok
+test tests::wrong_total_is_rejected - should panic ... ok
+test tests::cannot_double_claim - should panic ... ok
+test tests::nothing_before_first_period - should panic ... ok
+test tests::claims_earned_periods_once ... ok
+test tests::pay_stops_after_last_period ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/sandbox.rs (target/debug/deps/sandbox-4071ed722414ac09)
+
+running 5 tests
+test nothing_to_claim_before_the_first_period ... ok
+test only_the_exact_full_payroll_is_accepted ... ok
+test a_stranger_cannot_claim ... ok
+test a_payee_pulls_real_pay_after_a_period ... ok
+test pay_stops_after_the_last_period ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.96s
+
+     Running unittests src/lib.rs (target/debug/deps/pactsmith_split-955c3baa69b040c6)
+
+running 6 tests
+test tests::shares_must_total_100_percent - should panic ... ok
+test tests::stranger_cannot_withdraw - should panic ... ok
+test tests::rounding_leftover_is_not_lost ... ok
+test tests::divides_by_shares ... ok
+test tests::recipient_withdraws_once ... ok
+test tests::cannot_withdraw_twice - should panic ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/sandbox.rs (target/debug/deps/sandbox-5f080734703a8b15)
+
+running 5 tests
+test shares_that_do_not_total_100_percent_cannot_initialize ... ok
+test an_empty_payment_is_rejected ... ok
+test a_stranger_cannot_withdraw ... ok
+test nobody_can_withdraw_twice ... ok
+test a_payment_is_split_70_20_10_and_withdrawn ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.27s
+

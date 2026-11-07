@@ -1,0 +1,12 @@
+{
+  "name": "pactsmith-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pactsmith backend: chat with an AI, strictly validate the result against three fixed templates.",
+  "engines": { "node": ">=20.6" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>window.PACTSMITH_API=location.protocol==="file:"?"http://localhost:4000":location.origin;</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4F46E5">
+<title>Pactsmith: the AI agent that builds payroll, vaults and escrow on NEAR</title>
+<meta name="description" content="Describe a money rule in plain English. Pactsmith, an AI agent on NEAR, turns it into a tested payroll, vault, escrow or revenue-split contract.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#fff;--alt:#f6f7fb;--card:#fff;--fg:#0f172a;--mut:#475569;--line:#e5e7f0;--ind:#4f46e5;--blu:#2563eb;--grn:#16a34a;--code:#f6f7fb;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1020;--alt:#121631;--card:#161b38;--fg:#e8ecf7;--mut:#a3adc8;--line:#262d52;--code:#0f1328;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1020;--alt:#121631;--card:#161b38;--fg:#e8ecf7;--mut:#a3adc8;--line:#262d52;--code:#0f1328;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.6 Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}h1,h2,h3,p{margin:0}
+:focus-visible{outline:2px solid #818cf8;outline-offset:3px}
+.w{max-width:1280px;margin:0 auto;padding:0 40px}
+.banner{background:linear-gradient(90deg,#4f46e5,#3b82f6);color:#fff;padding:12px 16px;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;font-weight:500;font-size:17px;text-align:center}
+.banner a{background:#fff;color:#4338ca;padding:8px 18px;border-radius:8px;font-size:15px;font-weight:500}
+header{background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:84px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:32px;letter-spacing:-.04em}
+.logo svg{width:26px;height:26px}
+nav{display:flex;gap:56px;font-weight:500;font-size:18px}
+nav a{color:var(--fg)}nav a:hover{color:var(--ind)}
+.login{color:var(--ind);font-weight:600;font-size:18px}
+.hero{background:linear-gradient(135deg,#161a38 0%,#2b2a78 55%,#233a8f 100%);color:#fff;overflow:hidden}
+.hg{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;padding:88px 0 40px}
+h1{font-size:clamp(40px,5.6vw,80px);font-weight:700;line-height:1.08;letter-spacing:-.025em}
+.rot{display:block;height:1.12em;overflow:hidden;color:#a5b4fc;white-space:nowrap}
+.rot span{display:block;animation:up .5s ease both}
+@keyframes up{from{transform:translateY(100%);opacity:0}to{transform:none;opacity:1}}
+.hero p.sub{margin-top:28px;font-size:23px;line-height:1.5;color:#cdd0f1;max-width:640px}
+.cta{display:inline-flex;align-items:center;gap:12px;margin-top:40px;background:#4f46e5;color:#fff;font-weight:600;font-size:21px;padding:22px 44px;border-radius:12px;border:0;cursor:pointer;font-family:inherit}
+.cta:hover{background:#4338ca}
+.stats{display:flex;gap:56px;margin:56px 0 0;flex-wrap:wrap}
+.stats b{display:block;font-size:36px;line-height:1.2;color:#8b8ff5;font-weight:700}
+.stats span{font-size:17px;color:#d5d7f5}
+.globe{width:100%;max-width:560px;justify-self:end;display:block}
+.works{border-top:1px solid rgba(255,255,255,.13);margin-top:48px;padding:48px 0 56px;text-align:center}
+.works p{color:#cdd0f1;font-size:20px}
+.works div{display:flex;justify-content:center;gap:24px 64px;flex-wrap:wrap;margin-top:28px;font-size:28px;font-weight:600}
+section{padding:88px 0}
+.alt{background:var(--alt)}
+.hd{text-align:center;max-width:760px;margin:0 auto 52px}
+.hd h2{font-size:clamp(30px,3.8vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.15}
+.hd p{margin-top:16px;color:var(--mut);font-size:19px}
+.car{position:relative;max-width:1180px;margin:0 auto}
+.slide{background:var(--card);border-radius:20px;box-shadow:0 10px 40px rgba(30,30,80,.10);padding:56px 64px;display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center;min-height:420px}
+.slide h3{font-size:clamp(34px,4.4vw,58px);font-weight:700;letter-spacing:-.03em;line-height:1.05}
+.slide p{margin-top:22px;font-size:20px;color:var(--mut);line-height:1.65}
+.code{background:var(--code);border-radius:10px;padding:20px 22px;font:12.5px/1.65 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--mut);overflow-x:auto;white-space:pre}
+.code .k{color:#dc2626}.code .s{color:#16a34a}.code .c{opacity:.75}
+.arr{position:absolute;top:50%;width:54px;height:54px;margin-top:-27px;border-radius:50%;border:0;background:var(--card);box-shadow:0 4px 16px rgba(30,30,80,.16);cursor:pointer;display:grid;place-items:center;color:var(--fg)}
+.arr.l{left:-27px}.arr.r{right:-27px}
+.dots{display:flex;justify-content:center;gap:12px;margin-top:28px}
+.dots button{width:18px;height:18px;border-radius:50%;border:0;background:#cfd2de;cursor:pointer;padding:0}
+.dots button[aria-current="true"]{background:var(--ind)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+.pc{background:var(--card);border-radius:18px;box-shadow:0 8px 30px rgba(30,30,80,.08);padding:48px 40px 40px;display:flex;flex-direction:column}
+.ic{width:96px;height:96px;border-radius:16px;display:grid;place-items:center;margin:0 auto 36px}
+.ic svg{width:44px;height:44px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pc h3{font-size:28px;font-weight:600;line-height:1.25;letter-spacing:-.01em}
+.pc ul{list-style:none;padding:0;margin:28px 0 36px;flex:1}
+.pc li{display:flex;gap:16px;align-items:flex-start;margin-bottom:20px;font-size:20px;line-height:1.45;color:var(--fg)}
+.pc li svg{flex:none;width:28px;height:28px;margin-top:2px;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pb{display:flex;justify-content:flex-start;align-items:center;gap:14px;color:#fff;font:600 21px Inter,sans-serif;padding:20px 36px;border-radius:12px;border:0;cursor:pointer}
+.bd{display:grid;grid-template-columns:.9fr 1.1fr;gap:32px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 30px rgba(30,30,80,.06)}
+.in{padding:32px}
+.in label{font-weight:600;font-size:18px;display:block;margin-bottom:12px}
+textarea{width:100%;min-height:170px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font:400 17px/1.55 Inter,sans-serif;color:var(--fg);background:var(--bg)}
+textarea:focus{outline:2px solid var(--ind);outline-offset:0;border-color:var(--ind)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 24px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:8px 16px;font:500 14.5px Inter,sans-serif;cursor:pointer}
+.chip:hover{border-color:var(--ind);color:var(--ind)}
+.go{width:100%;justify-content:center}
+.go[disabled]{opacity:.6;cursor:wait}
+.note{margin-top:16px;font-size:14.5px;color:var(--mut)}
+.err{margin-top:14px;color:#dc2626;font-size:15px}
+.pv{min-height:560px;display:flex;flex-direction:column}
+.ph{padding:20px 28px;border-bottom:1px solid var(--line);font-weight:600;font-size:18px;display:flex;justify-content:space-between;gap:12px}
+.ph span{color:var(--mut);font-weight:500;font-size:15px}
+.rail{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.st{padding:16px 18px;border-right:1px solid var(--line);font-size:14.5px;color:var(--mut)}
+.st:last-child{border-right:0}.st b{display:block;color:var(--fg);font-size:15.5px;font-weight:600}
+.st[data-s="work"]{background:#eef2ff;color:#3730a3}.st[data-s="done"] b{color:var(--grn)}
+@media (prefers-color-scheme:dark){.st[data-s="work"]{background:#1d2250;color:#c7d2fe}}
+.sp{display:inline-block;width:12px;height:12px;border:2px solid #a5b4fc;border-top-color:var(--ind);border-radius:50%;animation:r .8s linear infinite;margin-right:6px;vertical-align:-1px}
+@keyframes r{to{transform:rotate(360deg)}}
+.pb2{padding:28px;flex:1}
+.empty{color:var(--mut);padding:56px 8px;text-align:center;font-size:18px}
+.res h4{margin:26px 0 10px;font-size:15px;font-weight:600;color:var(--mut)}
+.res h4:first-child{margin-top:0}
+.res .t{font-size:24px;font-weight:700;letter-spacing:-.02em}
+.res .sm{color:var(--mut);margin-top:6px}
+.kv{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.kv div{display:flex;justify-content:space-between;gap:16px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:15.5px}
+.kv div:last-child{border-bottom:0}.kv dt{color:var(--mut)}.kv dd{margin:0;font-weight:600;text-align:right}
+.res ul{margin:0;padding-left:20px;font-size:15.5px}.res li{margin-bottom:6px}
+.tt{font:13.5px/1.55 ui-monospace,Menlo,Consolas,monospace;background:var(--code);border-radius:8px;padding:10px 14px;margin-bottom:8px}
+.tt small{display:block;font:14px Inter,sans-serif;color:var(--mut)}
+.warn{background:#fffbeb;border:1px solid #fde68a;color:#78350f;border-radius:10px;padding:12px 16px;font-size:15px;margin-top:18px}
+@media (prefers-color-scheme:dark){.warn{background:#2a2210;border-color:#5a4a16;color:#fde68a}}
+.band{background:linear-gradient(135deg,#161a38,#2b2a78 60%,#233a8f);color:#fff;text-align:center;padding:80px 0}
+.band h2{font-size:clamp(30px,4vw,48px);font-weight:700;letter-spacing:-.02em}
+.band p{margin:16px auto 0;max-width:640px;color:#cdd0f1;font-size:20px}
+footer{padding:36px 0 44px;color:var(--mut);font-size:14.5px;border-top:1px solid var(--line)}
+footer .w{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}footer p{max-width:60em}
+@media (max-width:1000px){
+ nav{display:none}.w{padding:0 20px}
+ .hg,.bd,.cards,.slide{grid-template-columns:1fr}
+ .hg{padding:56px 0 24px}.globe{justify-self:center;max-width:420px}
+ .slide{padding:32px 24px;gap:28px}.arr{display:none}.stats{gap:32px}
+ section{padding:64px 0}.rail{grid-template-columns:1fr 1fr}.st:nth-child(2){border-right:0}.st:nth-child(-n+2){border-bottom:1px solid var(--line)}
+ .in{padding:22px}.pc{padding:36px 26px 28px}
+}
+.js .rv{opacity:0;transform:translateY(32px);transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .85s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js .rv.on{opacity:1;transform:none}
+.tx .wd{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.14em;margin-bottom:-.14em}
+.tx .wd>i{display:inline-block;font-style:normal}
+.js .tx .wd>i{transform:translateY(110%);transition:transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--d,0s)}
+.js .tx.on .wd>i{transform:none}
+.prog{position:fixed;top:0;left:0;height:3px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:#818cf8;z-index:50}
+.globe,.hg>div{will-change:transform}
+.bd2{display:grid;grid-template-columns:.8fr 1.2fr;gap:32px;align-items:start}
+.bl{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.bl:last-child{border-bottom:0}.bl b{display:block;font-size:16px}.bl small{color:var(--mut)}
+.mini{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;padding:7px 14px;font:500 14px Inter,sans-serif;cursor:pointer}
+.mini:hover{border-color:var(--ind);color:var(--ind)}
+.sb{display:inline-block;padding:4px 14px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:600;font-size:14px}
+.sims{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.sims select{border:1px solid var(--line);border-radius:8px;padding:7px 10px;background:var(--bg);color:var(--fg);font:500 14px Inter,sans-serif}
+.slog{min-height:48px;margin-top:10px;font-size:15px;color:var(--mut)}
+.in textarea{min-height:92px}
+.chat{height:300px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px;background:var(--bg);display:flex;flex-direction:column;gap:10px}
+.cm{max-width:88%;padding:10px 14px;border-radius:14px;font-size:15.5px;line-height:1.5}
+.cm.a{background:var(--alt);align-self:flex-start}
+.cm.u{background:var(--ind);color:#fff;align-self:flex-end}
+.mk{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:24px;background:var(--bg)}
+.mkh{padding:14px 18px;background:var(--alt);display:flex;justify-content:space-between;gap:10px;font-size:16px}
+.mkh span{color:var(--mut);font-size:13.5px}
+.mkb{padding:6px 18px}
+.mkb div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15.5px}
+.mkb div:last-child{border-bottom:0}.mkb span{color:var(--mut)}
+.mka{padding:14px 18px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap}
+.mkm{padding:0 18px 16px;color:var(--mut);font-size:15px;min-height:34px}
+@media (max-width:1000px){.bd2{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="banner">Build payroll, vaults and escrow on NEAR by describing them <a href="#build">Start building</a></div>
+<header><div class="w bar">
+ <a class="logo" href="#top" aria-label="Pactsmith home"><svg viewBox="0 0 26 26"><path d="M3 3h10v4H7v16H3z" fill="#22c55e"/></svg>pactsmith</a>
+ <nav aria-label="Main"><a href="#products">Templates</a><a href="#how">How it works</a><a href="#build">Builder</a><a href="#sandbox">Sandbox</a><a href="#about">Security</a></nav>
+ <a class="login" href="#build">Open builder</a>
+</div></header>
+
+<main id="top">
+<div class="hero"><div class="w">
+ <div class="hg">
+  <div>
+   <h1>Build <span class="rot" id="rot" aria-live="off"><span>escrow</span></span> on NEAR by describing it.</h1>
+   <p class="sub">Pactsmith is an AI agent that turns a plain-English money rule into a tested smart contract, and shows you every step while it works.</p>
+   <button class="cta" data-go>Try building with Pactsmith <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+   <div class="stats">
+    <div><b>3</b><span>contract templates</span></div>
+    <div><b>1</b><span>signature to deploy</span></div>
+    <div><b>0</b><span>access keys left behind</span></div>
+   </div>
+  </div>
+  <svg class="globe" viewBox="0 0 400 400" role="img" aria-label="Globe showing a payment moving between two NEAR accounts">
+   <defs>
+    <radialGradient id="g" cx="50%" cy="62%" r="60%"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#eceefc"/><stop offset="1" stop-color="#b9bdf0"/></radialGradient>
+    <pattern id="d" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="3" cy="3" r="1.35" fill="#7f84d6"/></pattern>
+    <clipPath id="c"><circle cx="200" cy="200" r="190"/></clipPath>
+    <mask id="m"><g fill="#fff"><path d="M40 95 L120 62 L185 80 L196 122 L172 152 L152 190 L122 194 L98 160 L64 132Z"/><path d="M148 214 L188 220 L210 252 L198 298 L176 338 L158 300 L148 256Z"/><path d="M236 104 L278 92 L304 110 L298 142 L318 178 L302 232 L270 268 L250 232 L244 182 L226 140Z"/><path d="M292 78 L346 84 L380 118 L362 154 L332 164 L306 142Z"/></g></mask>
+   </defs>
+   <circle cx="200" cy="200" r="190" fill="url(#g)"/>
+   <g clip-path="url(#c)"><rect width="400" height="400" fill="url(#d)" mask="url(#m)"/></g>
+   <path id="route" d="M112 150 Q178 66 262 124" fill="none" stroke="#4f46e5" stroke-width="2"/>
+   <g id="dest" opacity="0"><circle cx="262" cy="124" r="11" fill="#fff" stroke="#4f46e5" stroke-width="2.5"/><rect x="212" y="142" width="100" height="26" rx="13" fill="#4f46e5"/><text id="dl" x="262" y="160" text-anchor="middle" font-size="13" font-weight="600" fill="#fff" font-family="Inter,sans-serif">ada.near</text></g>
+   <g id="coin"><circle r="16" fill="#fff" stroke="#4f46e5" stroke-width="2.5"/><text id="cg" y="5.5" text-anchor="middle" font-size="16" font-weight="700" fill="#4f46e5" font-family="Inter,sans-serif">$</text></g>
+  </svg>
+ </div>
+ <div class="works"><p>Built to work with</p><div><span>NEAR</span><span>USDC</span><span>MyNearWallet</span><span>Meteor</span><span>HOT Wallet</span></div></div>
+</div></div>
+
+<section class="alt" id="how"><div class="w">
+ <div class="hd"><h2>From one sentence to a contract you can check</h2><p>Every step is visible, and you confirm what the agent understood before anything is built.</p></div>
+ <div class="car" aria-roledescription="carousel" aria-label="How Pactsmith works">
+  <div class="slide" id="slide"></div>
+  <button class="arr l" id="prev" aria-label="Previous slide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <button class="arr r" id="next" aria-label="Next slide"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  <div class="dots" id="dots"></div>
+ </div>
+</div></section>
+
+<section id="products"><div class="w">
+ <div class="hd"><h2>Money tools Pactsmith builds for you</h2><p>The agent starts from fixed templates, so you decide the terms and it handles the contract.</p></div>
+ <div class="cards">
+  <article class="pc">
+   <div class="ic" style="background:#e0e7ff"><svg viewBox="0 0 24 24" stroke="#4f46e5"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg></div>
+   <h3>Escrow: hold funds until you approve</h3>
+   <ul>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Payer deposits an exact amount once</li>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Only the payer releases it to the payee</li>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Anyone can refund the payer after the deadline</li>
+   </ul>
+   <button class="pb" style="background:#4f46e5" data-ex="0">Build an escrow <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </article>
+  <article class="pc">
+   <div class="ic" style="background:#dbeafe"><svg viewBox="0 0 24 24" stroke="#2563eb"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div>
+   <h3>Payroll Vault: pay a team on a schedule</h3>
+   <ul>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Fixed payees, amount and number of periods</li>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Payees pull their own pay</li>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Funded once with the exact total, so every paycheck is guaranteed</li>
+   </ul>
+   <button class="pb" style="background:#2563eb" data-ex="1">Build a payroll vault <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </article>
+  <article class="pc">
+   <div class="ic" style="background:#dcfce7"><svg viewBox="0 0 24 24" stroke="#16a34a"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></div>
+   <h3>Revenue Split: share every payment</h3>
+   <ul>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Shares fixed in basis points, totalling 10,000</li>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>Recipients withdraw their own share</li>
+    <li><svg viewBox="0 0 24 24" stroke="#16a34a"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>No owner, admin or setter</li>
+   </ul>
+   <button class="pb" style="background:#16a34a" data-ex="2">Build a revenue split <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  </article>
+ </div>
+</div></section>
+
+<section class="alt" id="build"><div class="w">
+ <div class="hd"><h2>Describe it. Watch Pactsmith build it.</h2><p>Chat with Pactsmith in plain words. Your pact page appears on the right, and you can click through it.</p></div>
+ <div class="bd">
+  <div class="panel in">
+   <button class="mini" id="rs" style="float:right">Start over</button><label for="prompt">Talk to Pactsmith</label><div id="chat" class="chat" aria-live="polite"></div>
+   <textarea id="prompt" placeholder="Type here and press Enter…"></textarea>
+   <div class="chips" aria-label="Examples"><button class="chip" data-ex="0">Escrow</button><button class="chip" data-ex="1">Payroll</button><button class="chip" data-ex="2">Revenue split</button></div>
+   <button class="pb go" id="go" style="background:#4f46e5">Send</button>
+   <div class="err" id="err" role="alert"></div>
+   <p class="note">Nothing is sent to the blockchain and no wallet is needed yet. Pactsmith only plans and previews.</p>
+  </div>
+  <div class="panel pv">
+   <div class="ph">Build preview <span id="pst">Waiting for your rule</span></div>
+   <div class="rail" id="rail"></div>
+   <div class="pb2" id="out"><div class="empty">Your pact appears here: the template, its terms, the tests and anything Pactsmith wants you to confirm.</div></div>
+  </div>
+ </div>
+</div></section>
+
+<section class="alt" id="sandbox"><div class="w">
+ <div class="hd"><h2>Your sandbox</h2><p>Every plan you build is saved in this browser. Reopen it, or test how its rules behave before you deploy anything.</p></div>
+ <div class="bd2">
+  <div class="panel in"><b style="font-size:18px">Saved builds</b><div id="bl" style="margin-top:8px"></div></div>
+  <div class="panel in" id="sim"></div>
+ </div>
+</div></section>
+
+<section id="about"><div class="w">
+ <div class="hd"><h2>Built so you don’t have to trust the AI</h2><p>The agent never invents contract code. It fills in a fixed template with your terms, writes tests for your rules, and asks you to confirm every party, amount and date.</p></div>
+</div></section>
+
+<div class="band"><div class="w"><h2>Start with a sentence.</h2><p>Tell Pactsmith what the money should do, and see the plan in seconds.</p><button class="cta" data-go>Try building with Pactsmith <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></div>
+</main>
+
+<footer><div class="w"><p>Pactsmith contracts are tested but not professionally audited. Don’t use them for large sums. Payroll intervals are fixed lengths, so “monthly” means 30 days.</p><p>MIT licensed</p></div></footer>
+
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)},$$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+var reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var W=[{w:"escrow",g:"$",d:"ada.near"},{w:"payroll",g:"N",d:"team.near"},{w:"vaults",g:"V",d:"vault.near"},{w:"revenue splits",g:"%",d:"partners.near"}];
+var rot=$("#rot"),coin=$("#coin"),dest=$("#dest"),route=$("#route"),len=route.getTotalLength(),P=3800,idx=-1,t0=performance.now();
+function setWord(i){var o=W[i];rot.innerHTML="";var s=document.createElement("span");s.textContent=o.w;rot.appendChild(s);$("#cg").textContent=o.g;$("#dl").textContent=o.d}
+function place(p){var q=route.getPointAtLength(len*p);coin.setAttribute("transform","translate("+q.x+" "+q.y+")")}
+if(reduce){setWord(0);place(.5);dest.setAttribute("opacity","1")}else{
+ (function tick(now){var e=(now-t0),n=Math.floor(e/P)%W.length,p=(e%P)/P;if(n!==idx){idx=n;setWord(n)}
+  var m=Math.min(1,p/.72),k=m<.5?2*m*m:1-Math.pow(-2*m+2,2)/2;place(k);
+  coin.setAttribute("opacity",p<.06?p/.06:(p>.9?(1-p)/.1:1));
+  dest.setAttribute("opacity",p>.72&&p<.92?1:(p>=.92?(1-p)/.08:0));
+  requestAnimationFrame(tick)})(t0)}
+var S=[
+{t:"Describe it",p:"Write the rule in plain English. Pactsmith turns it into a Pact Card with every party, amount and date, ready for you to edit.",c:'<span class="c">// Your rule</span>\n"Hold 500 USDC for ada.near until I approve\n the website. Refund me after Dec 15."\n\n<span class="c">// Pact Card</span>\n{\n  <span class="k">"template"</span>: <span class="s">"escrow"</span>,\n  <span class="k">"payer"</span>: <span class="s">"you.near"</span>,\n  <span class="k">"payee"</span>: <span class="s">"ada.near"</span>,\n  <span class="k">"amount"</span>: <span class="s">"500 USDC"</span>,\n  <span class="k">"refundAfter"</span>: <span class="s">"Dec 15"</span>\n}'},
+{t:"Watch it build",p:"The agent fills a fixed template, writes tests that encode your rules, and runs them. Every step shows on screen as it happens.",c:'<span class="c">// tests written for this pact</span>\npayer_deposits_exact_amount_once\nonly_payer_can_release_to_payee\npayee_can_return_funds\nanyone_can_refund_after_deadline\nwrong_token_is_returned_in_full'},
+{t:"Deploy with one signature",p:"One transaction from your wallet creates the account and deploys the contract. No access key is added, so nobody can change it afterwards.",c:'<span class="c">// one transaction, four actions</span>\n[\n  <span class="s">"CreateAccount"</span>,\n  <span class="s">"Transfer"</span>,\n  <span class="s">"DeployContract"</span>,\n  <span class="s">"FunctionCall: new"</span>\n]\n<span class="c">// AddKey is never sent</span>'}];
+var ci=0,ct;
+function show(i){ci=(i+S.length)%S.length;var s=S[ci],el=$("#slide");el.innerHTML="";var a=document.createElement("div"),h=document.createElement("h3"),p=document.createElement("p"),c=document.createElement("div");h.textContent=s.t;p.textContent=s.p;a.appendChild(h);a.appendChild(p);c.className="code";c.innerHTML=s.c;el.appendChild(a);el.appendChild(c);
+ $$("#dots button").forEach(function(b,j){b.setAttribute("aria-current",j===ci?"true":"false")})}
+S.forEach(function(_,j){var b=document.createElement("button");b.setAttribute("aria-label","Go to slide "+(j+1));b.onclick=function(){show(j);auto()};$("#dots").appendChild(b)});
+function auto(){clearInterval(ct);if(!reduce)ct=setInterval(function(){show(ci+1)},7000)}
+$("#prev").onclick=function(){show(ci-1);auto()};$("#next").onclick=function(){show(ci+1);auto()};
+$(".car").addEventListener("mouseenter",function(){clearInterval(ct)});$(".car").addEventListener("mouseleave",auto);
+show(0);auto();
+var EX=["Hold 500 NEAR for ada.near until I approve the website. Refund me after Dec 15.","Pay three developers 2,000 NEAR each month for 6 months, funded up front.","Split every payment 70% to me, 20% to Sam and 10% to the design studio."];
+var ta=$("#prompt");
+function goBuild(){$("#build").scrollIntoView({behavior:reduce?"auto":"smooth"});setTimeout(function(){ta.focus({preventScroll:true})},400)}
+$$("[data-go]").forEach(function(b){b.onclick=goBuild});
+$$("[data-ex]").forEach(function(b){b.onclick=function(){ta.value=EX[+b.getAttribute("data-ex")];goBuild()}});
+var ST=["Read your rule","Choose template","Write tests","Review"];
+function rail(state){var r=$("#rail");r.innerHTML="";ST.forEach(function(n,i){var d=document.createElement("div"),b=document.createElement("b");d.className="st";d.setAttribute("data-s",state[i]||"wait");if(state[i]==="work"){var sp=document.createElement("i");sp.className="sp";b.appendChild(sp)}b.appendChild(document.createTextNode(n));d.appendChild(b);var s=document.createElement("span");s.textContent=state[i]==="done"?"Done":state[i]==="work"?"Working":"Waiting";d.appendChild(s);r.appendChild(d)})}
+rail([]);
+function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function list(items){var u=el("ul");items.forEach(function(x){u.appendChild(el("li",null,String(x)))});return u}
+function render(d){var o=$("#out");o.innerHTML="";var r=el("div","res");
+ if(!d||!d.template||d.template==="null"){r.appendChild(el("h4",null,"Pactsmith needs a change"));r.appendChild(el("p",null,(d&&d.message)||"This rule doesn’t fit the escrow, payroll or revenue-split templates yet. Try describing who pays whom, how much, and when."));o.appendChild(r);return}
+ r.appendChild(el("h4",null,"Template"));r.appendChild(el("div","t",d.title||d.template));r.appendChild(el("p","sm",d.summary||""));
+ if(d.parameters&&d.parameters.length){r.appendChild(el("h4",null,"Terms to confirm"));var kv=el("div","kv");d.parameters.forEach(function(p){var row=el("div");row.appendChild(el("dt",null,String(p.label)));row.appendChild(el("dd",null,String(p.value)));kv.appendChild(row)});r.appendChild(kv)}
+ if(d.rules&&d.rules.length){r.appendChild(el("h4",null,"What the contract will enforce"));r.appendChild(list(d.rules))}
+ if(d.tests&&d.tests.length){r.appendChild(el("h4",null,"Tests Pactsmith will write"));d.tests.forEach(function(t){var x=el("div","tt",String(t.name));x.appendChild(el("small",null,String(t.checks)));r.appendChild(x)})}
+ var more=[].concat(d.assumptions||[],d.risks||[]);
+ if(more.length){var w=el("div","warn");w.appendChild(el("b",null,"Check before you deploy"));w.appendChild(list(more));r.appendChild(w)}
+ o.appendChild(r)}
+var busy=false,timers=[];
+function PR(text){return "You are Pactsmith, an AI agent that plans NEAR smart contracts from plain-English money rules. Use ONLY these fixed templates: \"escrow\" (payer deposits an exact amount once; only the payer releases to the payee; payee can return it; after the deadline anyone can refund the payer), \"payroll\" (fixed payees, fixed amount per period, fixed number of periods; payees pull their own pay; the vault is funded once with the exact total so every period is guaranteed, and the funder cannot withdraw), \"split\" (every payment divided by fixed basis points totalling 10000; recipients withdraw their own share). No template has an owner, admin or setter. Amounts are in NEAR only for now (USDC support is planned). Never write contract code.\nRespond with ONLY a JSON object, no markdown, in this shape: {\"template\":\"escrow|payroll|split|null\",\"title\":\"short name\",\"summary\":\"one plain sentence\",\"parameters\":[{\"label\":\"\",\"value\":\"\"}],\"rules\":[\"plain-English rule the contract enforces\"],\"tests\":[{\"name\":\"snake_case_test_name\",\"checks\":\"what it proves\"}],\"assumptions\":[\"anything you guessed that the user must confirm\"],\"risks\":[\"real limits, e.g. a payee must register with the USDC token\"],\"message\":\"only if template is null: what is missing or why it does not fit\"}. Give 4 to 6 tests. If a party, amount or date is missing, put a placeholder in parameters and add it to assumptions. If it does not fit a template, set template to null.\nUser rule: "+text}
+$("#go").onclick=async function(){
+ if(busy)return;var text=ta.value.trim(),er=$("#err");er.textContent="";
+ if(text.length<12){er.textContent="Describe your rule in a full sentence: who pays whom, how much, and when.";return}
+ var sample=null;try{sample=window.claude&&await window.claude.use("sample")}catch(e){}
+ if(!sample){er.textContent="The live builder isn’t available in this view. Open the page in claude.ai to use it.";return}
+ busy=true;var go=$("#go");go.disabled=true;go.textContent="Pactsmith is building…";$("#pst").textContent="Building";
+ $("#out").innerHTML="";$("#out").appendChild(el("div","empty","Reading your rule…"));
+ var state=["work"];rail(state);
+ timers=[1800,4200,7000].map(function(ms,i){return setTimeout(function(){state[i]="done";state[i+1]="work";rail(state)},ms)});
+ try{
+  var r=await sample(PR(text),{cache:false,modelTier:"default"}),raw=(r&&r.text||"").replace(/```json|```/g,"").trim(),a=raw.indexOf("{"),b=raw.lastIndexOf("}");
+  var d=JSON.parse(raw.slice(a,b+1));timers.forEach(clearTimeout);rail(["done","done","done","done"]);render(d);save(d,text);$("#pst").textContent=d.template&&d.template!=="null"?"Plan ready for review":"Needs a change"
+ }catch(e){timers.forEach(clearTimeout);rail([]);$("#out").innerHTML="";$("#out").appendChild(el("div","empty","Pactsmith couldn’t finish this build. Please try again."));$("#pst").textContent="Something went wrong";
+  if(e&&e.code==="rate_limited")er.textContent="Too many requests. Wait a moment and try again.";
+ }
+ busy=false;go.disabled=false;go.textContent="Try building with Pactsmith"};
+/* backend */
+var API=(window.PACTSMITH_API||(location.protocol==="file:"?"http://localhost:4000":"")).replace(/\/$/,""),msgs=[];
+var ACT={escrow:[{role:"You",label:"Release the money",says:"The money goes to the person you named right away."},{role:"Payee",label:"Hand it back",says:"The money returns to you."},{role:"Anyone",label:"Refund after the date",says:"Once the refund date has passed, the money returns to you."}],payroll:[{role:"Each person",label:"Collect my pay",says:"They receive the pay they have earned so far, once."}],split:[{role:"Anyone",label:"Pay in",says:"The payment is divided between everyone automatically."},{role:"Each person",label:"Withdraw my share",says:"They receive everything credited to them."}]};
+function showPact(p){render({template:p.template,title:p.receipt.title,summary:"Please check every line below before anything is created.",parameters:p.receipt.facts,rules:p.receipt.lines,tests:[],assumptions:[],actions:ACT[p.template]||[]});save({template:p.template,title:p.receipt.title,summary:"",parameters:p.receipt.facts,rules:p.receipt.lines},msgs.filter(function(m){return m.role==="user"}).map(function(m){return m.content}).join(" "))}
+async function backend(text){
+ var er=$("#err"),go=$("#go");asking=true;msgs.push({role:"user",content:text});say("u",text);ta.value="";go.disabled=true;go.textContent="Thinking…";$("#pst").textContent="Working";rail(["work"]);
+ try{var res=await fetch(API+"/api/chat",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({messages:msgs})}),d=await res.json();
+  if(!res.ok)throw new Error(d.error||"Something went wrong.");
+  msgs.push({role:"assistant",content:d.reply});say("a",d.reply);
+  if(d.ready&&d.pact){showPact(d.pact);rail(["done","done","done","done"]);$("#pst").textContent="Plan ready for review"}else{rail(["done","work"]);$("#pst").textContent="Waiting for your answers"}
+ }catch(e){msgs.pop();rail([]);say("a",(e&&e.message&&e.message!=="Failed to fetch")?e.message:"I couldn’t reach the assistant. Please check your connection and try again.");$("#pst").textContent="Something went wrong"}
+ asking=false;go.disabled=false;go.textContent="Send"}
+/* conversation */
+var hist=[],asking=false,GREET='Hi, I’m Pactsmith. Tell me what you want to set up, for example holding money until a job is approved, paying a team, or splitting income. I’ll ask if I need anything else.';
+function say(w,t){var c=$("#chat");c.appendChild(el("div","cm "+w,t));c.scrollTop=c.scrollHeight}
+say("a",GREET);
+$("#rs").onclick=function(){hist=[];msgs=[];$("#chat").innerHTML="";say("a",GREET);$("#out").innerHTML="";$("#out").appendChild(el("div","empty","Your pact appears here as you talk."));rail([]);$("#pst").textContent="Waiting for your rule";$("#err").textContent=""};
+ta.onkeydown=function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#go").click()}};
+var XTRA=' Speak to someone with no technical background: never use the words contract, wasm, basis points or NEP. Reply ONLY with JSON in the shape above plus three more fields: "reply" (one or two friendly plain sentences; if something important is missing, ask ONE short question), "ready" (true only when who pays, who gets paid, the amount and any dates are all known), and "actions" (3 to 4 objects {"role":"Payer","label":"Approve and release","says":"what happens, in plain words"} for the buttons on the pact page).';
+function mock(d){if(!d||!d.template||d.template==="null")return;var o=$("#out"),m=el("div","mk"),h=el("div","mkh"),b=el("div","mkb"),a=el("div","mka"),msg=el("div","mkm","Click a button to see what each person can do.");
+ h.appendChild(el("b",null,d.title||d.template));h.appendChild(el("span",null,"Pact page preview"));
+ (d.parameters||[]).slice(0,5).forEach(function(p){var r=el("div");r.appendChild(el("span",null,String(p.label)));r.appendChild(el("b",null,String(p.value)));b.appendChild(r)});
+ (d.actions||[]).slice(0,4).forEach(function(x){var bt=el("button","mini",String(x.role)+": "+String(x.label));bt.onclick=function(){msg.textContent=String(x.says)};a.appendChild(bt)});
+ m.appendChild(h);m.appendChild(b);if(a.children.length)m.appendChild(a);m.appendChild(msg);o.insertBefore(m,o.firstChild)}
+var _r=render;render=function(d){_r(d);mock(d)};
+$("#go").onclick=async function(){
+ if(asking)return;var text=ta.value.trim(),er=$("#err");er.textContent="";
+ if(text.length<3){er.textContent="Tell Pactsmith what you want to set up.";return}
+ if(API)return backend(text);
+ var sample=null;try{sample=window.claude&&await window.claude.use("sample")}catch(e){}
+ if(!sample){er.textContent="The live agent isn’t available in this view. Open the page in claude.ai to use it.";return}
+ asking=true;hist.push("User: "+text);say("u",text);ta.value="";
+ var go=$("#go");go.disabled=true;go.textContent="Thinking…";$("#pst").textContent="Working";rail(["work"]);
+ try{
+  var r=await sample(PR("")+" Conversation so far: "+hist.join(" / ")+XTRA,{cache:false,modelTier:"default"}),raw=(r&&r.text||"").replace(/```json|```/g,"").trim(),d=JSON.parse(raw.slice(raw.indexOf("{"),raw.lastIndexOf("}")+1));
+  hist.push("Pactsmith: "+(d.reply||""));say("a",d.reply||"Here is your plan.");
+  var ok=d.template&&d.template!=="null",rd=ok&&d.ready!==false;
+  rail(rd?["done","done","done","done"]:["done","work"]);render(d);
+  $("#pst").textContent=rd?"Plan ready for review":(ok?"Waiting for your answers":"Needs a change");
+  if(rd)save(d,hist.filter(function(h){return h.indexOf("User: ")===0}).join(" "));
+ }catch(e){rail([]);say("a","Sorry, I couldn’t finish that. Please try again.");$("#pst").textContent="Something went wrong";if(e&&e.code==="rate_limited")er.textContent="Too many requests. Wait a moment and try again."}
+ asking=false;go.disabled=false;go.textContent="Send"};
+/* sandbox */
+var KEY="pactsmith.builds",builds=[],sel=null,st={s:"created",late:false};
+try{builds=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(builds))}catch(e){}}
+function save(d,text){if(!d||!d.template||d.template==="null")return;builds.unshift({id:Date.now(),text:text,d:d});builds=builds.slice(0,12);persist();sel=builds[0];st={s:"created",late:false};draw();sim()}
+function draw(){var l=$("#bl");l.innerHTML="";if(!builds.length){l.appendChild(el("p","sm","Nothing saved yet. Build a pact above and it appears here."));return}
+ builds.forEach(function(b){var r=el("div","bl"),t=el("div"),bt=el("b",null,b.d.title||b.d.template);t.appendChild(bt);t.appendChild(el("small",null,b.d.template+" · "+new Date(b.id).toLocaleDateString()));var a=el("div"),o=el("button","mini","Open"),x=el("button","mini","Delete");a.style.display="flex";a.style.gap="8px";
+  o.onclick=function(){sel=b;st={s:"created",late:false};ta.value=b.text;render(b.d);sim();$("#sim").scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"})};
+  x.onclick=function(){builds=builds.filter(function(z){return z!==b});if(sel===b)sel=null;persist();draw();sim()};
+  a.appendChild(o);a.appendChild(x);r.appendChild(t);r.appendChild(a);l.appendChild(r)})}
+function sim(){var s=$("#sim");s.innerHTML="";if(!sel){s.appendChild(el("p","sm","Select a saved build to test its rules here."));return}
+ s.appendChild(el("div","t",sel.d.title||sel.d.template));
+ if(sel.d.template!=="escrow"){s.appendChild(el("p","sm","The rule simulator covers escrow for now. Payroll and split simulators arrive with their contracts."));return}
+ var bd=el("span","sb","Status: "+st.s),who=el("select"),lg=el("div","slog","Pick who is acting, then try an action."),row=el("div","sims");
+ ["payer","payee","anyone"].forEach(function(w){var o=el("option",null,"Acting as "+w);o.value=w;who.appendChild(o)});
+ var tm=el("button","mini",st.late?"Deadline: passed":"Deadline: not yet");tm.onclick=function(){st.late=!st.late;sim()};
+ function act(k){var w=who.value,m;
+  if(k==="deposit")m=st.s!=="created"?"Rejected: already funded.":w!=="payer"?"Rejected: only the payer can deposit.":(st.s="funded","Funded with the agreed amount.");
+  else if(st.s!=="funded")m="Rejected: escrow is not funded.";
+  else if(k==="release")m=w!=="payer"?"Rejected: only the payer can release.":(st.s="released","Released to the payee.");
+  else if(k==="return")m=w!=="payee"?"Rejected: only the payee can return funds.":(st.s="refunded","Returned to the payer.");
+  else m=!st.late?"Rejected: deadline not reached.":(st.s="refunded","Refunded to the payer.");
+  bd.textContent="Status: "+st.s;lg.textContent=m}
+ [["deposit","Deposit"],["release","Release"],["return","Return funds"],["refund","Refund"]].forEach(function(p){var b=el("button","mini",p[1]);b.onclick=function(){act(p[0])};row.appendChild(b)});
+ row.insertBefore(who,row.firstChild);row.appendChild(tm);s.appendChild(bd);s.appendChild(row);s.appendChild(lg)}
+draw();sim();
+/* scroll motion */
+if(!reduce){document.documentElement.classList.add("js");
+ $$(".hd h2,.band h2").forEach(function(h){var t=h.textContent.trim().split(/\s+/);h.textContent="";h.classList.add("tx");t.forEach(function(w,i){var s=el("span","wd"),n=el("i",null,w);n.style.setProperty("--d",(i*.05)+"s");s.appendChild(n);h.appendChild(s);h.appendChild(document.createTextNode(" "))})});
+ $$(".hero .sub,.hero .cta,.stats>div,.works,.hd p,.slide,.pc,.panel,.band p,.band .cta").forEach(function(e){var i=Array.prototype.indexOf.call(e.parentNode.children,e);e.style.setProperty("--d",Math.min(i,4)*.1+"s");e.classList.add("rv")});
+ var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add("on");io.unobserve(x.target)}})},{threshold:.15,rootMargin:"0px 0px -8% 0px"});
+ $$(".rv,.tx").forEach(function(e){io.observe(e)});
+ var bar=el("div","prog"),gl=$(".globe"),ht=$(".hg>div"),tk=false;document.body.appendChild(bar);
+ function onS(){tk=false;var y=window.scrollY||0;if(y<1100){gl.style.transform="translateY("+(y*.16).toFixed(1)+"px)";ht.style.transform="translateY("+(-y*.05).toFixed(1)+"px)"}
+  var h=document.documentElement.scrollHeight-innerHeight;bar.style.transform="scaleX("+(h>0?Math.min(1,y/h):0)+")"}
+ addEventListener("scroll",function(){if(!tk){tk=true;requestAnimationFrame(onS)}},{passive:true});onS()}
+})();
+</script>
+</body>
+</html>

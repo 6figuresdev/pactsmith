@@ -1,0 +1,7 @@
+target
+contracts
+*.zip
+.env
+.env.*
+server/.env
+server/test
