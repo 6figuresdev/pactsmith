@@ -58,7 +58,7 @@ function client() {
       else { var go = el('button', 'btn', 'Create on testnet'); go.onclick = async function () {
           go.disabled = true; msg.textContent = 'Creating your contract… this takes about 10 seconds.';
           try { var r = await fetch('/api/deploy', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ id: id, wallet: account, owner: OWNER }) }); var j = await r.json();
-            if (r.ok || j.deployed) { S.deployed = j.deployed; paint(); return; } msg.textContent = j.error || 'The launch failed. Please try again.'; }
+            if (r.ok || j.deployed) { S.deployed = j.deployed; paint(); return; } msg.textContent = (j.error || 'The launch failed. Please try again.') + (j.reason ? ' (code: ' + j.reason + ')' : ''); }
           catch (e) { msg.textContent = 'Could not reach Pactsmith. Check your connection and try again.'; }
           go.disabled = false; };
         launch.appendChild(go); }

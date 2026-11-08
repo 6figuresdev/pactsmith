@@ -93,3 +93,55 @@ test('deployPact end to end with the local server route', async () => {
     const page = await (await fetch(`${base}/app/${id}`)).text(); assert.ok(page.includes(j.deployed.contractId));
   } finally { await new Promise((ok) => s.close(ok)); }
 });
+
+test('storage: spare balance is adjustable but clamped, and the code cost is always covered', async () => {
+  const { extraStorage } = await import('../src/near.js');
+  assert.equal(extraStorage({}), 5n * 10n ** 23n);
+  assert.equal(extraStorage({ NEAR_PACT_EXTRA_NEAR: '0.2' }), 2n * 10n ** 23n);
+  assert.equal(extraStorage({ NEAR_PACT_EXTRA_NEAR: '0' }), 10n ** 23n);      // never below 0.1
+  assert.equal(extraStorage({ NEAR_PACT_EXTRA_NEAR: '50' }), 2n * 10n ** 24n); // never above 2
+  assert.equal(extraStorage({ NEAR_PACT_EXTRA_NEAR: 'abc' }), 5n * 10n ** 23n);
+  assert.equal(extraStorage({ NEAR_PACT_EXTRA_NEAR: '' }), 5n * 10n ** 23n);
+  const s = await setup(); const d = mkDeps();
+  await deployPact({ build: build(), id: 'abcdefghijkl', wallet: 'alice.testnet', now: NOW, env: { ...env, NEAR_PACT_EXTRA_NEAR: '0.2' }, deps: d });
+  assert.equal(d.sent[0].actions[1].y, BigInt(WASM.length) * 10n ** 19n + 2n * 10n ** 23n);
+  assert.ok(s);
+});
+
+test('errors: raw launch errors become safe reasons, never shown to visitors', async () => {
+  const { classifyDeployError, REASON_TEXT, factoryStatus, neededFor } = await import('../src/near.js');
+  const cases = { 'AccessKeyDoesNotExist: Access key ed25519:ABC does not exist at block height 1': 'factory-key', 'Actor has insufficient funds NotEnoughBalance': 'factory-funds', 'LackBalanceForState': 'factory-funds', 'AccountAlreadyExists': 'exists', "Cannot find module 'near-api-js'": 'library', 'on-chain check failed (hashOk=false, keyless=true)': 'check', "ENOENT: no such file or directory, open '/x/escrow.wasm'": 'wasm', 'fetch failed': 'network', 'boom': 'other' };
+  for (const [msg, reason] of Object.entries(cases)) assert.equal(classifyDeployError(msg), reason, msg);
+  for (const t of Object.values(REASON_TEXT)) assert.ok(!/ed25519|key:|secret/i.test(t.replace(/key does not match/, '')));
+  const s = await setup({ deps: { account: { async signAndSendTransaction() { throw new Error('AccessKeyDoesNotExist: Access key ed25519:LEAKYKEY does not exist'); } } } });
+  const r = await call(s, { id: s.id, wallet: 'alice.testnet', owner });
+  assert.equal(r.status, 502); assert.equal(r.json.reason, 'factory-key'); assert.ok(!JSON.stringify(r.json).includes('LEAKYKEY'));
+  assert.equal(neededFor({}, [100000, 150000, 120000]), 2.0);
+  const nearApi = { KeyPair: { fromString: () => ({ getPublicKey: () => ({ toString: () => 'ed25519:PUB' }) }) } };
+  const e2 = { NEAR_FACTORY_ACCOUNT: 'f.testnet', NEAR_FACTORY_KEY: 'ed25519:x' };
+  const rpcOk = (bal, keys) => async (_m, p) => (p.request_type === 'view_account' ? { amount: String(BigInt(bal) * 10n ** 24n) } : { keys: keys.map((k) => ({ public_key: k })) });
+  assert.deepEqual(await factoryStatus({}, {}), { configured: false });
+  let st = await factoryStatus(e2, { nearApi, sizes: [100000, 150000, 120000], rpc: rpcOk(10, ['ed25519:PUB']) });
+  assert.equal(st.keyRegistered, true); assert.equal(st.enoughBalance, true); assert.equal(st.balanceNear, 10);
+  st = await factoryStatus(e2, { nearApi, sizes: [100000, 150000, 120000], rpc: rpcOk(1, ['ed25519:OTHER']) });
+  assert.equal(st.keyRegistered, false); assert.equal(st.enoughBalance, false); assert.equal(st.neededNear, 2.05);
+  st = await factoryStatus(e2, { nearApi, sizes: [1, 1, 1], rpc: async () => { throw new Error('UNKNOWN_ACCOUNT'); } });
+  assert.equal(st.accountExists, false);
+  st = await factoryStatus(e2, { nearApi: { KeyPair: { fromString: () => { throw new Error('bad'); } } }, rpc: rpcOk(1, []) });
+  assert.equal(st.keyFormatOk, false);
+});
+
+test('health: basic answer, and the launch self-check shows only public facts', async () => {
+  const { createHealthHandler } = await import('../src/vercel.js');
+  const res = () => { const r = { setHeader() {}, status(c) { r.code = c; return r; }, json(b) { r.body = b; return r; } }; return r; };
+  const env2 = { GROQ_API_KEY: 'gsk_SECRET', NEAR_FACTORY_ACCOUNT: 'f.testnet', NEAR_FACTORY_KEY: 'ed25519:SECRETKEY' };
+  const h = createHealthHandler({ env: env2, limiter: memoryLimiter(5), wasmOk: () => true, status: async () => ({ configured: true, accountExists: true, keyRegistered: false, balanceNear: 1.2 }) });
+  const a = res(); await h({ query: {}, headers: {} }, a); assert.deepEqual(a.body, { ok: true, ai: true, launch: true, wasm: true });
+  const b = res(); await h({ query: { check: 'launch' }, headers: {} }, b);
+  assert.equal(b.body.factory.keyRegistered, false); assert.equal(b.body.factory.account, 'f.testnet');
+  assert.ok(!JSON.stringify(b.body).includes('SECRET'));
+  const tight = createHealthHandler({ env: env2, limiter: memoryLimiter(1), wasmOk: () => true, status: async () => ({}) });
+  await tight({ query: { check: 'launch' }, headers: {} }, res()); const c = res(); await tight({ query: { check: 'launch' }, headers: {} }, c); assert.equal(c.code, 429);
+  const boom = createHealthHandler({ env: env2, wasmOk: () => true, status: async () => { throw new Error('rpc down with secret'); } });
+  const d = res(); await boom({ query: { check: 'launch' }, headers: {} }, d); assert.ok(!JSON.stringify(d.body).includes('secret'));
+});

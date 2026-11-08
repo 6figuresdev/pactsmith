@@ -18,7 +18,7 @@ const mkAccount = async (name, yocto) => { const kp = KeyPair.fromRandom('ed2551
   await factory.createAccount({ newAccountId: id, publicKey: kp.getPublicKey().toString(), nearToTransfer: yocto }); return { id, account: new Account(id, provider, kp.toString()) }; };
 
 console.log('Creating throwaway payer and payee…');
-const payer = await mkAccount('payer', 2n * NEAR), payee = await mkAccount('payee', NEAR / 2n);
+const payer = await mkAccount('payer', 2n * NEAR), payee = await mkAccount('payee', NEAR / 2n); // about 5 NEAR in total with the contract
 const lockedNear = Number((BigInt(loadWasm('escrow').length) * 10n ** 19n + extraStorage(env)) / 10n ** 20n) / 10000;
 console.log('Contract storage that will be locked: about', lockedNear.toFixed(2), 'NEAR');
 const v = validatePact({ template: 'escrow', payee: payee.id, amount: '1', deadline: new Date(Date.now() + 864e5).toISOString() });

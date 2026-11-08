@@ -1,3 +1,6 @@
+// Shows which public key a seed phrase or secret key belongs to, and whether it matches the account.
+// Nothing is saved or sent anywhere.
+// Usage: node scripts/check-key.mjs ed25519:EXPECTED_PUBLIC_KEY
 import { KeyPair } from 'near-api-js';
 import { parseSeedPhrase } from 'near-api-js/seed-phrase';
 import readline from 'node:readline';

@@ -2,6 +2,8 @@ import { handleChat } from './chat.js';
 import { renderApp, manifest, notFoundPage } from './appPage.js';
 import { handleDeploy } from './deploy.js';
 import { buildPackage, packageWasmHash } from './pkg.js';
+import { factoryStatus } from './near.js';
+import { existsSync } from 'node:fs';
 
 export function createHandler({ getComplete, limiter, store = null, env = process.env, now = () => Date.now() }) {
   const extra = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -53,5 +55,21 @@ export function createDeployHandler({ store, limiter, env = process.env, deps = 
     const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
     const out = await handleDeploy({ body, store, limiter, ip, env, deps, now: now() });
     return res.status(out.status).json(out.json);
+  };
+}
+
+// GET /api/health  and  GET /api/health?check=launch (tests the testnet factory setup; shows only public facts and yes/no answers)
+export function createHealthHandler({ env = process.env, limiter, status = factoryStatus, wasmOk = () => ['escrow', 'payroll', 'split'].every((t) => existsSync(new URL(`../wasm/${t}.wasm`, import.meta.url))) } = {}) {
+  return async function handler(req, res) {
+    res.setHeader('cache-control', 'no-store');
+    const base = { ok: true, ai: Boolean(env.GROQ_API_KEY || env.XAI_API_KEY), launch: Boolean(env.NEAR_FACTORY_ACCOUNT && env.NEAR_FACTORY_KEY), wasm: wasmOk() };
+    if (req.query?.check !== 'launch') return res.status(200).json(base);
+    if (limiter) {
+      const ip = String(req.headers?.['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress || 'unknown';
+      const gate = await limiter(`health:${ip}`);
+      if (!gate.ok) return res.status(gate.status).json({ error: gate.message });
+    }
+    try { return res.status(200).json({ ...base, factory: { account: env.NEAR_FACTORY_ACCOUNT || null, ...(await status(env)) } }); }
+    catch (e) { console.error('factory check failed:', e.message); return res.status(200).json({ ...base, factory: { error: 'check failed' } }); }
   };
 }

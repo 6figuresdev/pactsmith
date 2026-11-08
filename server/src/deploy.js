@@ -1,5 +1,5 @@
 import { createHash, timingSafeEqual } from 'node:crypto';
-import { deployPact, isTestnetAccount } from './near.js';
+import { deployPact, isTestnetAccount, classifyDeployError, REASON_TEXT } from './near.js';
 
 const sha = (s) => createHash('sha256').update(String(s)).digest('hex');
 const same = (a, b) => { const x = Buffer.from(a), y = Buffer.from(b); return x.length === y.length && timingSafeEqual(x, y); };
@@ -23,7 +23,8 @@ export async function handleDeploy({ body, store, limiter, ip, env = process.env
     await store.update(id, { ...build, deployed });
     return { status: 200, json: { deployed: publicDeployed(deployed) } };
   } catch (e) {
-    console.error('deploy failed:', e.message);
-    return { status: 502, json: { error: 'The testnet launch failed and nothing was created. Please try again in a moment.' } };
+    const reason = classifyDeployError(e.message);
+    console.error('deploy failed:', reason, '|', e.message);
+    return { status: 502, json: { error: REASON_TEXT[reason], reason } };
   }
 }
