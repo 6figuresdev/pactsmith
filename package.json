@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": "22.x" },
-  "scripts": { "test": "cd server && node --test" }
+  "engines": {
+    "node": "22.x"
+  },
+  "scripts": {
+    "test": "cd server && node --test",
+    "smoke": "node scripts/testnet-smoke.mjs"
+  },
+  "dependencies": {
+    "near-api-js": "7.4.0"
+  }
 }

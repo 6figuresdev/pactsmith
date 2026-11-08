@@ -37,7 +37,7 @@ function escrow(p, now, errors) {
   return {
     ok: true, template: 'escrow',
     initArgs: { payer: WALLET, payee: p.payee, amount: amount.toString(), deadline_ns: (BigInt(ms) * 1_000_000n).toString() },
-    facts: { payee: p.payee, amount, deadlineMs: ms },
+    facts: { payee: p.payee, amount, deadlineMs: ms, assumedTime: ms % DAY_MS === 0 },
   };
 }
 

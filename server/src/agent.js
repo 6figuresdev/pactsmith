@@ -1,5 +1,6 @@
 import { validatePact } from './validate.js';
 import { buildReceipt } from './receipt.js';
+import { sanitizeDapp, cleanList } from './dapp.js';
 
 export const SYSTEM = (now) => `You are Pactsmith, a friendly assistant that helps people with no technical background set up a money agreement on the NEAR blockchain. Today is ${new Date(now).toISOString().slice(0, 10)} (UTC).
 You can set up exactly three kinds of pact:
@@ -9,6 +10,7 @@ You can set up exactly three kinds of pact:
    pact: {"template":"payroll","payees":["a.near","b.near"],"amountPerPeriod":"2","periodDays":30,"periods":6,"start":"2026-12-01T00:00:00Z"} (start is optional)
 3. "split": every payment that comes in is divided by fixed percentages.
    pact: {"template":"split","recipients":[{"account":"me.near","percent":70},{"account":"sam.near","percent":30}]}
+Every pact may also include an optional "dapp" object that customises the app people will use, never the rules: {"name":"short app name","tagline":"one line","accent":"#0e7490","theme":"light or dark","labels":{"release":"Approve the work"}}. Allowed label keys: escrow deposit, release, return, refund; payroll deposit, claim; split pay, withdraw. Pick a name, tagline and wording that fit what the user described. Add "unsupported": ["short plain sentence"] for anything the user asked for that these three tools cannot do yet (for example a referee, payments in stages, different pay per person), tell them so kindly in your reply, and never pretend it is included.
 Rules: amounts are in NEAR only. Account names look like name.near or name.testnet. Never invent names, amounts or dates: if something is missing, ask ONE short question. Use everyday words and never say contract, wasm, basis points or NEP. If the request does not fit these three tools, say so kindly and suggest the closest one.
 Reply with ONLY a JSON object: {"reply":"one or two friendly sentences","ready":true or false,"pact":null or the pact object}. Set ready to true only when every detail is known.`;
 
@@ -34,7 +36,9 @@ export async function runAgent(history, complete, now = Date.now()) {
       return { reply: reply || 'Tell me a bit more about what you want to set up.', ready: false, pact: null };
     }
     const v = validatePact(d.pact, now);
-    if (v.ok) return { reply, ready: true, pact: { template: v.template, initArgs: v.initArgs, receipt: buildReceipt(v) } };
+    if (v.ok) {
+      return { reply, ready: true, pact: { template: v.template, initArgs: v.initArgs, receipt: buildReceipt(v), dapp: sanitizeDapp(d.pact.dapp, v.template), unsupported: cleanList(d.unsupported ?? d.pact.unsupported) } };
+    }
     lastErrors = v.errors;
     messages.push({ role: 'assistant', content: raw }, { role: 'user', content: `The details have problems: ${v.errors.join(' ')} Fix them or ask the user, and reply with only the JSON object.` });
   }

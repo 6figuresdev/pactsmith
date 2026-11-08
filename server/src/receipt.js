@@ -16,6 +16,7 @@ export function buildReceipt(v) {
         `Only you can release it to ${f.payee}.`,
         `${f.payee} can hand it back to you at any time.`,
         `If nothing happens, anyone can return it to you after ${date(f.deadlineMs)}.`,
+        ...(f.assumedTime ? ['No time of day was given, so midnight UTC was assumed. Tell Pactsmith if you want a different time.'] : []),
         'Nobody else can touch the money, and the rules cannot be changed once the pact is set up.',
       ],
       facts: [{ label: 'Amount', value: `${amt} NEAR` }, { label: 'Pays to', value: f.payee }, { label: 'Refund after', value: date(f.deadlineMs) }],

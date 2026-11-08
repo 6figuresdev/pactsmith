@@ -1,10 +1,37 @@
 {
-  "headers": [
-    { "source": "/(.*)", "headers": [
-      { "key": "X-Content-Type-Options", "value": "nosniff" },
-      { "key": "X-Frame-Options", "value": "DENY" },
-      { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
-    ] }
+  "rewrites": [
+    {
+      "source": "/app/:id/package.zip",
+      "destination": "/api/package/:id"
+    },
+    {
+      "source": "/app/:id/manifest.webmanifest",
+      "destination": "/api/manifest/:id"
+    },
+    {
+      "source": "/app/:id",
+      "destination": "/api/app/:id"
+    }
   ],
-  "functions": { "api/*.js": { "maxDuration": 30 } }
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 30,
+      "includeFiles": "server/{wasm,templates}/**"
+    }
+  }
 }
