@@ -3,7 +3,7 @@
 // Usage: NEAR_FACTORY_ACCOUNT=pactsmith-factory.testnet NEAR_FACTORY_KEY=ed25519:... node scripts/testnet-smoke.mjs
 import { Account, JsonRpcProvider, KeyPair, actions } from 'near-api-js';
 import { validatePact } from '../server/src/validate.js';
-import { deployPact, rpc, DEFAULT_RPC } from '../server/src/near.js';
+import { deployPact, rpc, DEFAULT_RPC, loadWasm, extraStorage } from '../server/src/near.js';
 
 const env = process.env, factoryId = env.NEAR_FACTORY_ACCOUNT, factoryKey = env.NEAR_FACTORY_KEY;
 if (!factoryId || !factoryKey) { console.error('Set NEAR_FACTORY_ACCOUNT and NEAR_FACTORY_KEY first.'); process.exit(1); }
@@ -14,11 +14,13 @@ let failed = 0; const check = (name, ok, extra = '') => { console.log(`${ok ? 'P
 const view = async (cid, method, args = {}) => { const r = await rpc('query', { request_type: 'call_function', finality: 'final', account_id: cid, method_name: method, args_base64: Buffer.from(JSON.stringify(args)).toString('base64') }, env); return JSON.parse(Buffer.from(r.result).toString()); };
 const balance = async (id) => BigInt((await rpc('query', { request_type: 'view_account', finality: 'final', account_id: id }, env)).amount);
 
-const mkAccount = async (name) => { const kp = KeyPair.fromRandom('ed25519'); const id = `${name}-${stamp}.${factoryId}`;
-  await factory.createAccount({ newAccountId: id, publicKey: kp.getPublicKey().toString(), nearToTransfer: 4n * NEAR }); return { id, account: new Account(id, provider, kp.toString()) }; };
+const mkAccount = async (name, yocto) => { const kp = KeyPair.fromRandom('ed25519'); const id = `${name}-${stamp}.${factoryId}`;
+  await factory.createAccount({ newAccountId: id, publicKey: kp.getPublicKey().toString(), nearToTransfer: yocto }); return { id, account: new Account(id, provider, kp.toString()) }; };
 
 console.log('Creating throwaway payer and payee…');
-const payer = await mkAccount('payer'), payee = await mkAccount('payee');
+const payer = await mkAccount('payer', 2n * NEAR), payee = await mkAccount('payee', NEAR / 2n);
+const lockedNear = Number((BigInt(loadWasm('escrow').length) * 10n ** 19n + extraStorage(env)) / 10n ** 20n) / 10000;
+console.log('Contract storage that will be locked: about', lockedNear.toFixed(2), 'NEAR');
 const v = validatePact({ template: 'escrow', payee: payee.id, amount: '1', deadline: new Date(Date.now() + 864e5).toISOString() });
 if (!v.ok) throw new Error(v.errors.join());
 console.log('Launching the escrow…');

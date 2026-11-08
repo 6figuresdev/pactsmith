@@ -45,13 +45,20 @@ export async function checkOnChain(contractId, expectedHash, call) {
   return { codeHash: code.hash, hashOk: code.hash === expectedHash, keyless: Array.isArray(keys.keys) && keys.keys.length === 0 };
 }
 
+// Spare balance on top of the code's own storage cost (1 NEAR per 100 KB). Default 0.5 NEAR, adjustable from 0.1 to 2.
+export function extraStorage(env = process.env) {
+  const n = Number(env.NEAR_PACT_EXTRA_NEAR);
+  const x = Number.isFinite(n) && env.NEAR_PACT_EXTRA_NEAR !== '' && env.NEAR_PACT_EXTRA_NEAR != null ? Math.min(2, Math.max(0.1, n)) : 0.5;
+  return BigInt(Math.round(x * 1e6)) * 10n ** 18n;
+}
+
 export async function deployPact({ build, id, wallet, now = Date.now(), env = process.env, deps = {} }) {
   const factory = env.NEAR_FACTORY_ACCOUNT;
   const wasm = deps.wasm || loadWasm(build.template);
   const expected = base58(sha256(wasm));
   const contractId = contractIdFor(id, factory);
   const args = resolveInitArgs(build.initArgs, { wallet, nowNs: BigInt(now) * 1_000_000n });
-  const storage = BigInt(wasm.length) * 10n ** 19n + 5n * 10n ** 23n; // storage for the code, plus a little spare
+  const storage = BigInt(wasm.length) * 10n ** 19n + extraStorage(env); // the code's storage cost, plus a little spare
   let { account, actions } = deps;
   if (!account) {
     const m = await import('near-api-js');
